@@ -1,0 +1,341 @@
+/* =========================================
+   1. BRAND VARIABLES (Updated for New Logo)
+   ========================================= */
+:root {
+    /* NEW COLORS extracted from 'PI Logo Final proposal.png' */
+    --brand-primary: #0047AB;    /* The Royal Blue 'TP' */
+    --brand-secondary: #0063DB;  /* A slightly lighter blue for gradients */
+    --brand-accent: #FF5722;     /* The Orange/Red Dot */
+    
+    /* Functional Colors */
+    --text-main: #0F172A;
+    --text-light: #F8FAFC;
+    --bg-light: #F1F5F9;
+    --white: #FFFFFF;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--bg-light);
+    color: var(--text-main);
+    line-height: 1.6;
+}
+
+/* =========================================
+   2. NAVIGATION
+   ========================================= */
+header {
+    background: var(--white);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+nav {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo-brand {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--brand-primary);
+    letter-spacing: -0.5px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+.logo-img { height: 60px; width: auto; }
+
+/* Mobile Menu Button */
+.menu-toggle { font-size: 1.8rem; color: var(--brand-primary); cursor: pointer; display: none; }
+
+/* Desktop Nav Links */
+.nav-links { display: flex; gap: 2rem; }
+.nav-links a {
+    text-decoration: none;
+    color: var(--brand-primary);
+    font-weight: 600;
+    font-size: 0.95rem;
+    position: relative;
+    transition: color 0.3s;
+}
+.nav-links a:hover { color: var(--brand-accent); }
+
+/* Mobile Responsive Nav Logic */
+@media (max-width: 768px) {
+    .menu-toggle { display: block; }
+    .nav-links {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background: var(--white);
+        flex-direction: column;
+        padding: 2rem;
+        box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+        text-align: center;
+    }
+    .nav-links.active { display: flex; }
+}
+
+/* =========================================
+   3. HERO SECTION (Herald College Style)
+   ========================================= */
+.hero {
+    position: relative;
+    height: 85vh; 
+    min-height: 500px;
+    max-height: 900px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: var(--white);
+    overflow: hidden; 
+    
+    /* Updated Border to Orange */
+    border-bottom: 5px solid var(--brand-accent);
+    background-color: var(--brand-primary);
+}
+
+/* 1. Background Video Layer */
+.hero-video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; 
+    z-index: 0;
+}
+
+/* 2. Blue Tint Overlay Layer (Updated to match new Blue) */
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* Royal Blue with 60% Opacity */
+    background: rgba(0, 71, 171, 0.6); 
+    z-index: 1;
+}
+
+/* 3. Text Content Layer */
+.hero-content {
+    position: relative;
+    z-index: 2;
+    padding: 1.5rem;
+    max-width: 800px;
+    text-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    animation: fadeInUp 1s ease-out;
+}
+
+.hero h1 {
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 0.5rem;
+}
+
+.hero-desc {
+    font-size: 1.1rem;
+    color: #e2e8f0;
+    margin-bottom: 2rem;
+    line-height: 1.6;
+}
+
+/* Highlight Text (Now Orange) */
+.highlight-gold { color: var(--brand-accent); }
+
+/* Animation */
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Button (Updated to Orange Gradient) */
+.btn-gold {
+    background: linear-gradient(to right, var(--brand-accent), #FF8A50);
+    color: white;
+    padding: 1rem 2.5rem;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 800;
+    box-shadow: 0 10px 20px rgba(255, 87, 34, 0.3);
+    transition: transform 0.2s;
+    display: inline-block;
+}
+.btn-gold:hover { 
+    transform: translateY(-3px); 
+    box-shadow: 0 15px 30px rgba(255, 87, 34, 0.5); 
+}
+
+/* =========================================
+   4. PROGRAMS SECTION (With Video Cards)
+   ========================================= */
+.section-header { text-align: center; margin: 4rem 0 2rem 0; color: var(--brand-primary); }
+.section-header h2 { font-size: 2.2rem; font-weight: 800; }
+
+.container { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
+
+.grid-bento {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    padding-bottom: 4rem;
+}
+
+/* CARD STYLES */
+.card {
+    position: relative;
+    background: var(--white);
+    border-radius: 20px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    /* Top border now uses Secondary Blue */
+    border-top: 4px solid var(--brand-secondary);
+    transition: 0.3s;
+    overflow: hidden; 
+}
+
+.card:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
+
+/* Card Background Video */
+.card-video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.4;
+    z-index: 0;
+    pointer-events: none;
+}
+
+/* Card Content Wrapper */
+.card-content {
+    position: relative;
+    z-index: 1; 
+    padding: 2rem;
+}
+
+/* Icons updated to Blue/Orange Gradient */
+.icon-box {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    background: -webkit-linear-gradient(45deg, var(--brand-accent), var(--brand-primary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.card h3 { color: var(--brand-primary); font-size: 1.4rem; margin-bottom: 0.5rem; }
+.card ul li { margin-bottom: 8px; list-style: none; position: relative; padding-left: 20px; }
+.card ul li::before { content: "•"; color: var(--brand-accent); font-size: 1.5rem; position: absolute; left: 0; top: -5px; }
+
+/* =========================================
+   5. UDAAN / EVENTS SECTION
+   ========================================= */
+.events-grid {
+    display: grid;
+    grid-template-columns: 1fr; 
+    gap: 2rem;
+}
+
+@media (min-width: 768px) {
+    .events-grid {
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    }
+}
+
+.event-card {
+    background: white;
+    border-radius: 20px;
+    overflow: hidden; 
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    transition: transform 0.3s;
+    /* Bottom border updated to Orange */
+    border-bottom: 4px solid var(--brand-accent); 
+}
+
+.event-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+}
+
+.event-img {
+    height: 200px;
+    width: 100%;
+    position: relative;
+}
+
+.event-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; 
+}
+
+/* Badge updated to Blue background */
+.category-badge {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    background: var(--brand-primary);
+    color: white;
+    padding: 5px 12px;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+}
+
+.event-content { padding: 1.5rem; }
+.event-content h3 { color: var(--brand-primary); font-size: 1.3rem; margin-bottom: 0.5rem; }
+.event-content p { color: #64748b; font-size: 0.95rem; line-height: 1.5; }
+
+/* =========================================
+   6. FOOTER
+   ========================================= */
+footer {
+    background: var(--brand-primary);
+    color: white;
+    padding: 4rem 1rem 2rem 1rem;
+    border-top: 5px solid var(--brand-accent);
+}
+
+.footer-grid {
+    display: grid;
+    grid-template-columns: 1fr; 
+    gap: 2rem;
+    align-items: center; 
+    text-align: center; 
+}
+
+.footer-info p { margin-bottom: 1rem; font-size: 1.1rem; }
+.footer-info i { margin-right: 10px; width: 25px; color: var(--brand-accent); }
+
+.footer-map iframe {
+    width: 100%;
+    height: 300px; 
+    border-radius: 15px; 
+    border: 0;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3); 
+}
+
+@media (min-width: 768px) {
+    .footer-grid {
+        grid-template-columns: 1fr 1.5fr; 
+        text-align: left; 
+    }
+}
