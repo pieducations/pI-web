@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-     <!-- this is for the google SEO -->
-    <meta name="description" content="PI Educations is a leading educational institution in bhaktapur kamalbinayek, offering comprehensive programs from Grade 1 to University Entrance. We focus on building strong foundations in academics, computer skills, and career readiness. Join us to transform your education and build a successful future.">
+     <meta name="description" content="PI Educations is a leading educational institution in bhaktapur kamalbinayek, offering comprehensive programs from Grade 1 to University Entrance. We focus on building strong foundations in academics, computer skills, and career readiness. Join us to transform your education and build a successful future.">
 
     <meta name="keywords" content="PI Educations,PI Educational,pi educations, bridge course,bridge course in bhaktapur,Best IT courses in Bhaktapur, bridge course in kamalbinayek,Tuition,NEB ,afterschool programs, SEE preparation, +2 science support, computer courses,web development in bhaktapur, robotics">
     <meta name="google-site-verification" content="A9SI-yYUpmOf19AjoYSivUPwy1BHYVOL4XEDupVmf5I" />
@@ -14,10 +13,22 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
-
     <link rel="stylesheet" href="tst.css">
 </head>
 <body>
+
+    <div id="popupOverlay" class="popup-overlay">
+        <div class="popup-content">
+            <span class="close-btn" onclick="closePopup()">&times;</span>
+            
+            <img src="media/bridge_course.jpeg" alt="Admission Notice" 
+                 style="width: 80%; height: auto; ; object-fit: cover; border-radius: 10px; margin-bottom: 1.5rem;">
+            
+            <h2 style="color: var(--brand-primary); margin-bottom: 0.5rem;">Admissions Open!</h2>
+            
+            <a href="#contact" class="btn-gold" style="padding: 0.7rem 1.5rem;" onclick="closePopup()"> GRAB IT NOW</a>
+        </div>
+    </div>
 
     <header>
         <nav>
@@ -212,22 +223,36 @@
                 </div>
 
                 <div class="footer-map">
-<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1766.6346007310137!2d85.44175729391357!3d27.678073446694043!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39eb0500192a5db9%3A0x6a1f6c87c2cd15b2!2sPI%20Educational%20World!5e0!3m2!1sen!2snp!4v1771946731535!5m2!1sen!2snp" 
-width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" 
-referrerpolicy="no-referrer-when-downgrade"></iframe>
-                    
-                    
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d14130.927050019284!2d85.42880625!3d27.67812235!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39eb1aab0b471c25%3A0xe544df656dd3d65b!2sPI%20Educational%20World!5e0!3m2!1sen!2snp!4v1700000000000!5m2!1sen!2snp" 
+                    width="100%" height="300" style="border:0; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.3);" allowfullscreen="" loading="lazy" 
+                    referrerpolicy="no-referrer-when-downgrade"></iframe>
                 </div>
             </div>
             <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 2rem 0;">
-            <p style="font-size: 0.8rem; opacity: 0.7; text-align: center;">© 2026 PI Educations. All Rights Reserved..</p>
+            <p style="font-size: 0.8rem; opacity: 0.7; text-align: center;">© 2026 PI Educations. All Rights Reserved.</p>
         </div>
     </footer>
 
     <script>
+        // Mobile Menu Logic
         function toggleMenu() {
             const nav = document.getElementById('navLinks');
             nav.classList.toggle('active');
+        }
+
+        // Popup Notice Logic (Only triggers once per session)
+        document.addEventListener("DOMContentLoaded", function() {
+            if (!sessionStorage.getItem("popupClosed")) {
+                setTimeout(() => {
+                    document.getElementById("popupOverlay").classList.add("show");
+                }, 1500); // 1.5 second delay before popping up
+            }
+        });
+
+        // Close Popup Logic
+        function closePopup() {
+            document.getElementById("popupOverlay").classList.remove("show");
+            sessionStorage.setItem("popupClosed", "true"); // Saves to browser session
         }
     </script>
 
