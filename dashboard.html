@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Portal Preview | PI Educations</title>
+    <title>Student Portal | PI Educations</title>
     <link rel="icon" type="image/png" href="media/icon.jpeg">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -20,13 +20,22 @@
                 </a>
             </div>
             <div class="nav-links">
-                <a href="index.html">← Back to Home</a>
+                <button id="logoutBtn" class="btn-gold" style="padding: 0.4rem 1rem; border: none; cursor: pointer;">Logout</button>
             </div>
         </nav>
     </header>
 
-    <!-- Student Dashboard Layout -->
-    <div class="container" style="padding-top: 3rem; padding-bottom: 4rem;">
+    <!-- Paywall Restricted View (Shown if student hasn't paid) -->
+    <div id="restrictedView" class="container" style="display: none; padding: 5rem 1rem; text-align: center;">
+        <i class="fas fa-lock fa-3x" style="color: var(--brand-gold); margin-bottom: 1rem;"></i>
+        <h2>Access Pending</h2>
+        <p style="margin-top: 0.5rem; color: #666;">
+            Your account is currently inactive. Please visit the PI Educations office in Kamalbinayak or contact administration to activate your paid access.
+        </p>
+    </div>
+
+    <!-- Student Dashboard (Shown if is_paid = true) -->
+    <div id="paidPortal" class="container" style="display: none; padding-top: 3rem; padding-bottom: 4rem;">
         
         <!-- SECTION 1: PDF STUDY NOTES -->
         <div class="section-header">
@@ -34,47 +43,8 @@
             <p>Download your subject materials, practice sets, and worksheets.</p>
         </div>
 
-        <div class="grid-bento" style="margin-bottom: 4rem;">
-            
-            <div class="card" style="padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between;">
-                <div>
-                    <div class="icon-box" style="margin-bottom: 1rem;">
-                        <i class="fas fa-file-pdf"></i>
-                    </div>
-                    <h3>Units & Measurements</h3>
-                    <p style="font-size: 0.85rem; color: #666; margin-top: 0.3rem;">Physics • Grade 11</p>
-                </div>
-                <a href="#" target="_blank" class="btn-gold" style="display: block; text-align: center; margin-top: 1.5rem; padding: 0.5rem 1rem; font-size: 0.85rem;">
-                    View PDF Note
-                </a>
-            </div>
-
-            <div class="card" style="padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between;">
-                <div>
-                    <div class="icon-box" style="margin-bottom: 1rem;">
-                        <i class="fas fa-file-pdf"></i>
-                    </div>
-                    <h3>Matrices & Determinants</h3>
-                    <p style="font-size: 0.85rem; color: #666; margin-top: 0.3rem;">Mathematics • Grade 12</p>
-                </div>
-                <a href="#" target="_blank" class="btn-gold" style="display: block; text-align: center; margin-top: 1.5rem; padding: 0.5rem 1rem; font-size: 0.85rem;">
-                    View PDF Note
-                </a>
-            </div>
-
-            <div class="card" style="padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between;">
-                <div>
-                    <div class="icon-box" style="margin-bottom: 1rem;">
-                        <i class="fas fa-file-pdf"></i>
-                    </div>
-                    <h3>C Programming Fundamentals</h3>
-                    <p style="font-size: 0.85rem; color: #666; margin-top: 0.3rem;">Computer Science • Grade 12</p>
-                </div>
-                <a href="#" target="_blank" class="btn-gold" style="display: block; text-align: center; margin-top: 1.5rem; padding: 0.5rem 1rem; font-size: 0.85rem;">
-                    View PDF Note
-                </a>
-            </div>
-
+        <div id="notesContainer" class="grid-bento" style="margin-bottom: 4rem;">
+            <p style="color: #666; grid-column: 1/-1;">Loading study notes...</p>
         </div>
 
         <!-- SECTION 2: VIDEO LECTURES -->
@@ -83,27 +53,109 @@
             <p>Watch recorded sessions from your ongoing courses.</p>
         </div>
 
-        <div class="grid-bento">
-            
-            <div class="card" style="padding: 1rem;">
-                <h3 style="margin-bottom: 0.3rem;">Introduction to Vectors</h3>
-                <p style="font-size: 0.85rem; color: #666;">Physics • Chapter 2</p>
-                <div style="background: #111; border-radius: 8px; height: 220px; margin-top: 1rem; display: flex; align-items: center; justify-content: center; color: #fff;">
-                    <i class="fas fa-play-circle fa-3x" style="color: var(--brand-gold); cursor: pointer;"></i>
-                </div>
-            </div>
-
-            <div class="card" style="padding: 1rem;">
-                <h3 style="margin-bottom: 0.3rem;">Pointer & Memory Allocation</h3>
-                <p style="font-size: 0.85rem; color: #666;">Computer Science • Session 4</p>
-                <div style="background: #111; border-radius: 8px; height: 220px; margin-top: 1rem; display: flex; align-items: center; justify-content: center; color: #fff;">
-                    <i class="fas fa-play-circle fa-3x" style="color: var(--brand-gold); cursor: pointer;"></i>
-                </div>
-            </div>
-
+        <div id="videosContainer" class="grid-bento">
+            <p style="color: #666; grid-column: 1/-1;">Loading video lectures...</p>
         </div>
 
     </div>
 
+    <script type="module">
+        import { supabase } from './js/supabase.js';
+
+       async function initPortal() {
+    // 1. Check user session
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+        window.location.href = 'login.html';
+        return;
+    }
+
+    // 2. Query payment status
+    const { data: profile, error } = await supabase
+        .from('profiles')
+        .select('is_paid')
+        .eq('id', session.user.id)
+        .maybeSingle();
+
+    if (error) {
+        console.error("Error fetching profile:", error.message);
+    }
+
+    // 3. Check payment status
+    if (!profile || !profile.is_paid) {
+        document.getElementById('restrictedView').style.display = 'block';
+        return;
+    }
+
+    // 4. Access Granted
+    document.getElementById('restrictedView').style.display = 'none';
+    document.getElementById('paidPortal').style.display = 'block';
+    loadNotes();
+    loadLectures();
+}
+
+        async function loadNotes() {
+            const { data: notes, error } = await supabase.from('notes').select('*');
+            const container = document.getElementById('notesContainer');
+
+            if (error || !notes || notes.length === 0) {
+                container.innerHTML = '<p style="color: #666; grid-column: 1/-1;">No PDF notes uploaded yet.</p>';
+                return;
+            }
+
+            // Generate temporary secure signed URLs for each private PDF file
+            const notesHtml = await Promise.all(notes.map(async (n) => {
+                const { data } = await supabase.storage.from('pdf-notes').createSignedUrl(n.file_path, 3600);
+                const fileUrl = data ? data.signedUrl : '#';
+                console.log("Generated File URL for", n.title, ":", fileUrl);
+
+                return `
+                    <div class="card" style="padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between;">
+                        <div>
+                            <div class="icon-box" style="margin-bottom: 1rem;">
+                                <i class="fas fa-file-pdf"></i>
+                            </div>
+                            <h3>${n.title}</h3>
+                            <p style="font-size: 0.85rem; color: #666; margin-top: 0.3rem;">${n.subject || 'General'} ${n.grade ? '• ' + n.grade : ''}</p>
+                        </div>
+                        <a href="${fileUrl}" target="_blank" class="btn-gold" style="display: block; text-align: center; margin-top: 1.5rem; padding: 0.5rem 1rem; font-size: 0.85rem; text-decoration: none;">
+                            View PDF Note
+                        </a>
+                    </div>
+                `;
+            }));
+
+            container.innerHTML = notesHtml.join('');
+        }
+
+        async function loadLectures() {
+            const { data: lectures, error } = await supabase.from('lectures').select('*');
+            const container = document.getElementById('videosContainer');
+
+            if (error || !lectures || lectures.length === 0) {
+                container.innerHTML = '<p style="color: #666; grid-column: 1/-1;">No video lectures published yet.</p>';
+                return;
+            }
+
+            container.innerHTML = lectures.map(v => `
+                <div class="card" style="padding: 1rem;">
+                    <h3 style="margin-bottom: 0.3rem;">${v.title}</h3>
+                    <p style="font-size: 0.85rem; color: #666;">${v.subject || 'Lecture Session'}</p>
+                    <iframe src="https://iframe.mediadelivery.net/embed/YOUR_LIBRARY_ID/${v.bunny_video_id}" 
+                            style="width: 100%; height: 220px; border: 0; border-radius: 8px; margin-top: 1rem;" 
+                            allowfullscreen="true" 
+                            loading="lazy"></iframe>
+                </div>
+            `).join('');
+        }
+
+        // Logout logic
+        document.getElementById('logoutBtn').addEventListener('click', async () => {
+            await supabase.auth.signOut();
+            window.location.href = 'login.html';
+        });
+
+        initPortal();
+    </script>
 </body>
 </html>

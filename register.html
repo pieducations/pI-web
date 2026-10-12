@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Registration | PI Educations</title>
+    <link rel="icon" type="image/png" href="media/icon.jpeg">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .register-section {
+            min-height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        .register-card {
+            background: #ffffff;
+            padding: 2.5rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            max-width: 400px;
+            width: 100%;
+        }
+        .register-card h2 {
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+        .form-group label {
+            display: block;
+            font-size: 0.9rem;
+            margin-bottom: 0.4rem;
+            font-weight: 600;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+        }
+        .auth-btn {
+            width: 100%;
+            padding: 0.8rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .auth-switch {
+            text-align: center;
+            margin-top: 1.2rem;
+            font-size: 0.85rem;
+        }
+        .auth-switch a {
+            color: var(--brand-primary, #0056b3);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .auth-switch a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <nav>
+            <div class="logo-brand">
+                <a href="index.html" style="text-decoration: none; color: inherit; display: flex; align-items: center;">
+                    <img src="media/PI Logo Final proposal.png" alt="Pi Logo" class="logo-img"> 
+                    PI EDUCATIONS
+                </a>
+            </div>
+            <div class="nav-links">
+                <a href="index.html">← Back to Home</a>
+            </div>
+        </nav>
+    </header>
+
+    <section class="register-section">
+        <div class="register-card">
+            <h2>Create Account</h2>
+            <form id="registerForm">
+                <div class="form-group">
+                    <label for="fullName">Full Name</label>
+                    <input type="text" id="fullName" required placeholder="Bijaya Dulal">
+                </div>
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" required placeholder="student@example.com">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password (min 6 characters)</label>
+                    <input type="password" id="password" required minlength="6" placeholder="••••••••">
+                </div>
+                <button type="submit" id="submitBtn" class="btn-gold auth-btn">Register</button>
+            </form>
+            <p id="errorMsg" style="color: red; font-size: 0.85rem; margin-top: 1rem; text-align: center;"></p>
+            
+            <div class="auth-switch">
+                Already have an account? <a href="login.html">Sign In</a>
+            </div>
+        </div>
+    </section>
+
+    <script type="module">
+        import { supabase } from './js/supabase.js';
+
+        const registerForm = document.getElementById('registerForm');
+        const errorMsg = document.getElementById('errorMsg');
+        const submitBtn = document.getElementById('submitBtn');
+
+        registerForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            errorMsg.style.color = 'red';
+            errorMsg.textContent = '';
+            submitBtn.textContent = 'Creating account...';
+            submitBtn.disabled = true;
+
+            const fullName = document.getElementById('fullName').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value.trim();
+
+            // 1. Sign up the user with Supabase Auth (passing full_name in metadata)
+            const { data, error } = await supabase.auth.signUp({
+                email,
+                password,
+                options: {
+                    data: {
+                        full_name: fullName
+                    }
+                }
+            });
+
+            if (error) {
+                errorMsg.textContent = error.message;
+                submitBtn.textContent = 'Register';
+                submitBtn.disabled = false;
+            } else {
+                errorMsg.style.color = 'green';
+                errorMsg.textContent = 'Registration successful! Redirecting to dashboard...';
+                
+                // 2. Redirect to dashboard after successful registration & automatic login session
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 1000);
+            }
+        });
+    </script>
+</body>
+</html>

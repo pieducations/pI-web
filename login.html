@@ -52,6 +52,19 @@
             cursor: pointer;
             font-weight: 600;
         }
+        .auth-switch {
+            text-align: center;
+            margin-top: 1.2rem;
+            font-size: 0.85rem;
+        }
+        .auth-switch a {
+            color: var(--brand-primary, #0056b3);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .auth-switch a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
@@ -82,34 +95,48 @@
                     <label for="password">Password</label>
                     <input type="password" id="password" required placeholder="••••••••">
                 </div>
-                <button type="submit" class="btn-gold auth-btn">Sign In</button>
+                <button type="submit" id="submitBtn" class="btn-gold auth-btn">Sign In</button>
             </form>
             <p id="errorMsg" style="color: red; font-size: 0.85rem; margin-top: 1rem; text-align: center;"></p>
+            
+            <div class="auth-switch">
+                Don't have an account? <a href="register.html">Register here</a>
+            </div>
         </div>
     </section>
 
     <script type="module">
-        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+        import { supabase } from './js/supabase.js';
 
-        // Replace with your Supabase credentials
-        const SUPABASE_URL = 'https://YOUR_PROJECT_ID.supabase.co';
-        const SUPABASE_ANON_KEY = 'YOUR_ANON_KEY';
-        const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const loginForm = document.getElementById('loginForm');
+        const errorMsg = document.getElementById('errorMsg');
+        const submitBtn = document.getElementById('submitBtn');
 
-        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const errorMsg = document.getElementById('errorMsg');
+            errorMsg.style.color = 'red';
             errorMsg.textContent = '';
+            submitBtn.textContent = 'Signing in...';
+            submitBtn.disabled = true;
 
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value.trim();
 
-            const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+            const { data, error } = await supabase.auth.signInWithPassword({ 
+                email, 
+                password 
+            });
 
             if (error) {
                 errorMsg.textContent = error.message;
+                submitBtn.textContent = 'Sign In';
+                submitBtn.disabled = false;
             } else {
-                window.location.href = 'dashboard.html';
+                errorMsg.style.color = 'green';
+                errorMsg.textContent = 'Login successful! Redirecting...';
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 500);
             }
         });
     </script>
